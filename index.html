@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mathstronomica Hyper Futuristic Interactive</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+
+body {
+margin:0;
+font-family:'Orbitron',sans-serif;
+background:#000;
+overflow-x:hidden;
+perspective:1000px;
+color:#00ffea;
+}
+
+/* --- Starfield Background --- */
+#stars {
+position:fixed;
+width:100%; height:100%;
+background:#000;
+overflow:hidden;
+z-index:-1;
+}
+.star {
+position:absolute;
+border-radius:50%;
+background:white;
+opacity:0.7;
+animation:twinkle 3s infinite alternate;
+}
+@keyframes twinkle {
+0% {opacity:0.1;}
+100% {opacity:1;}
+}
+
+/* --- Header & Navigation --- */
+header {
+text-align:center;
+padding:25px;
+font-size:3em;
+font-weight:bold;
+letter-spacing:5px;
+text-shadow:0 0 20px #00ffea,0 0 40px #ff00ff,0 0 60px #00ffff;
+}
+nav {
+display:flex; justify-content:center; flex-wrap:wrap;
+gap:20px;
+padding:15px 0;
+background:linear-gradient(90deg,#0a0a23,#111144);
+box-shadow:0 0 20px #00ffea inset;
+}
+nav a {
+color:#00ffea; text-decoration:none; font-weight:bold;
+transition:0.3s; position:relative;
+}
+nav a::after {
+content:''; position:absolute; bottom:-5px; left:0; width:0%; height:2px;
+background:linear-gradient(90deg,#ff00ff,#00ffff); transition:0.3s;
+}
+nav a:hover::after { width:100%; }
+nav a:hover { color:#ff00ff; text-shadow:0 0 10px #ff00ff; }
+
+/* --- Sections --- */
+section { padding:60px 20px; max-width:1200px; margin:auto; }
+h1,h2,h3 { text-align:center; text-shadow:0 0 10px #00ffea,0 0 20px #ff00ff; }
+
+/* --- Earth & Satellites --- */
+.earth-container { position:relative; width:450px; height:450px; margin:auto; }
+.earth {
+width:150px; height:150px;
+background:url('[https://upload.wikimedia.org/wikipedia/commons/9/97/The_Earth_seen_from_Apollo_17.jpg](https://upload.wikimedia.org/wikipedia/commons/9/97/The_Earth_seen_from_Apollo_17.jpg)') center/cover no-repeat;
+border-radius:50%;
+position:absolute; top:150px; left:150px;
+box-shadow:0 0 50px #00ffea,0 0 80px #ff00ff;
+animation:rotateEarth 20s linear infinite;
+}
+@keyframes rotateEarth {0%{transform:rotateY(0deg);}100%{transform:rotateY(360deg);} }
+
+.satellite {
+width:20px; height:20px;
+background:linear-gradient(45deg,#ff00ff,#00ffff,#ff00ff);
+border-radius:50%; position:absolute; cursor:pointer;
+box-shadow:0 0 30px #ff00ff,0 0 50px #00ffff,0 0 70px #ff00ff;
+transition:0.3s;
+}
+.satellite:hover { transform:scale(1.5); box-shadow:0 0 70px #ff00ff,0 0 90px #00ffff; }
+
+.orbit {
+border-radius:50%; position:absolute; border:2px dashed;
+border-image-slice:1; border-image-source:linear-gradient(90deg,#ff00ff,#00ffff);
+box-shadow:0 0 20px #00ffea inset;
+}
+
+/* --- Trails --- */
+.trail {
+position:absolute;
+border-radius:50%;
+background:rgba(0,255,255,0.3);
+pointer-events:none;
+}
+
+/* --- Info Boxes --- */
+.info-box {
+background:linear-gradient(135deg,#111122,#000011);
+padding:20px; margin-top:25px; border-radius:15px; text-align:center;
+font-size:1.1em; box-shadow:0 0 20px #00ffea;
+transition:0.3s;
+}
+
+/* --- Quiz --- */
+.quiz .question, .laws .law-box, .trilat .tri-box {
+background:#000022; margin:20px auto; padding:20px; border-radius:15px;
+max-width:600px; text-align:center; box-shadow:0 0 15px #00ffea;
+font-weight:bold;
+}
+.btn {
+cursor:pointer; background:#00ffea; color:#000; border:none;
+padding:12px 25px; border-radius:15px; margin-top:15px;
+font-weight:bold; font-size:1em;
+transition:0.3s;
+}
+.btn:hover { background:#ff00ff; color:#fff; box-shadow:0 0 20px #00ffea; }
+
+/* --- Progress Bar --- */
+#progress-bar {
+height:20px; width:0%;
+background: linear-gradient(90deg,#ff0000,#ff9900,#ffff00,#00ff00,#00ffff,#0000ff,#ff00ff);
+border-radius:10px; transition: width 0.4s ease-in-out;
+}
+
+/* --- Footer --- */
+footer { margin-top:50px; text-align:center; padding:20px; background:#111122; color:#00ffea; box-shadow:0 -2px 20px #00ffea inset; }
+
+</style>
+</head>
+<body>
+
+<div id="stars"></div>
+
+<header>Mathstronomica</header>
+<nav>
+  <a href="#about">About</a>
+  <a href="#simulation">Simulation</a>
+  <a href="#laws">Kepler's Laws</a>
+  <a href="#trilat">Triangulation</a>
+  <a href="#quiz">Quiz</a>
+</nav>
+
+<section id="about">
+  <h1>About Mathstronomica</h1>
+  <p>Mathstronomica combines mathematics and astronomy into an immersive interactive platform. Explore satellites, orbital mechanics, Kepler's Laws, trilateration, and triangulation—all in real time!</p>
+</section>
+
+<section id="simulation">
+  <h1>Earth & Satellite Simulation</h1>
+  <div class="earth-container">
+    <div class="orbit" style="width:320px;height:320px;top:40px;left:40px;"></div>
+    <div class="orbit" style="width:380px;height:380px;top:10px;left:10px;"></div>
+    <div class="earth" id="earth"></div>
+    <div class="satellite" id="sat1"></div>
+    <div class="satellite" id="sat2"></div>
+    <div class="satellite" id="sat3"></div>
+  </div>
+  <div id="sat-info" class="info-box">Click satellites to see info. Hover or touch for interactive experience.</div>
+</section>
+
+<section id="laws" class="laws">
+  <h2>Kepler's Laws Interactive</h2>
+  <div class="law-box" id="law1">Law 1: Planetary orbits are elliptical with the Sun at one focus.</div>
+  <div class="law-box" id="law2">Law 2: A line joining a planet and the Sun sweeps out equal areas in equal times.</div>
+  <div class="law-box" id="law3">Law 3: The square of orbital period ∝ cube of semi-major axis.</div>
+</section>
+
+<section id="trilat" class="trilat">
+  <h2>Trilateration & Triangulation</h2>
+  <div class="tri-box">
+    <p>Click the satellites to simulate distance measurements. Use the calculated distances to determine position (demo).</p>
+    <button class="btn" onclick="simulateTrilateration()">Simulate Trilateration</button>
+    <div id="tri-result" class="info-box"></div>
+  </div>
+</section>
+
+<section id="quiz" class="quiz">
+  <h2>Mathstronomica Quiz</h2>
+  <div id="quiz-container">
+    <div class="question" id="question-box"></div>
+    <button class="btn" id="next-btn" onclick="nextQuestion()">Next</button>
+    <div class="info-box" id="quiz-result"></div>
+    <div class="info-box">
+      <div style="background:#000022; border-radius:10px; overflow:hidden;">
+        <div id="progress-bar"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  &copy; 2025 Mathstronomica. Developed by Subhronil Majumdar & contributors.
+</footer>
+
+<script>
+// --- Starfield ---
+for(let i=0;i<150;i++){
+  let s=document.createElement('div'); s.className='star';
+  let size=Math.random()*2+1; s.style.width=size+'px'; s.style.height=size+'px';
+  s.style.top=Math.random()*window.innerHeight+'px';
+  s.style.left=Math.random()*window.innerWidth+'px';
+  document.getElementById('stars').appendChild(s);
+}
+
+// --- Satellite Animation ---
+let angle1=0, angle2=180, angle3=90;
+const radius1=130,radius2=170,radius3=100;
+const sat1=document.getElementById('sat1');
+const sat2=document.getElementById('sat2');
+const sat3=document.getElementById('sat3');
+const satInfo=document.getElementById('sat-info');
+
+function animate(){
+  angle1+=1.2; angle2+=0.8; angle3+=1;
+  sat1.style.left=135+radius1*Math.cos(angle1*Math.PI/180)+'px';
+  sat1.style.top=135+radius1*Math.sin(angle1*0.7*Math.PI/180)+'px';
+  sat2.style.left=135+radius2*Math.cos(angle2*Math.PI/180)+'px';
+  sat2.style.top=135+radius2*Math.sin(angle2*1.3*Math.PI/180)+'px';
+  sat3.style.left=135+radius3*Math.cos(angle3*Math.PI/180)+'px';
+  sat3.style.top=135+radius3*Math.sin(angle3*0.9*Math.PI/180)+'px';
+  requestAnimationFrame(animate);
+}
+animate();
+
+sat1.onclick=()=>satInfo.textContent="Satellite 1: Low Earth Orbit. Demonstrates Kepler's Law 2.";
+sat2.onclick=()=>satInfo.textContent="Satellite 2: Geostationary Orbit. Demonstrates Kepler's Law 3.";
+sat3.onclick=()=>satInfo.textContent="Satellite 3: Medium Orbit. Perfect for trilateration demo.";
+
+// --- Trilateration ---
+function simulateTrilateration(){
+  document.getElementById('tri-result').textContent="Position simulated based on distances from satellites. Interactive demo complete!";
+}
+
+// --- Quiz ---
+const quizQuestions=[
+  {q:"Kepler's first law states the orbit is?",options:["Circle","Ellipse","Square"],answer:1},
+  {q:"Kepler's second law deals with?",options:["Equal areas in equal times","Elliptical orbit","Orbital period"],answer:0},
+  {q:"Kepler's third law relates?",options:["Distance & speed","Orbital period & semi-major axis","Mass & radius"],answer:1},
+  {q:"A geostationary satellite orbits at?",options:["Low Earth Orbit","36,000 km above Earth","Mars Orbit"],answer:1},
+  {q:"Trilateration uses how many reference points?",options:["2","3","4"],answer:1},
+  {q:"Which law explains equal areas in equal time?",options:["Law 1","Law 2","Law 3"],answer:1},
+  {q:"Elliptical orbits are explained by?",options:["Law 1","Law 2","Law 3"],answer:0},
+  {q:"Orbital period ∝ ?",options:["Mass","Cube of semi-major axis","Speed"],answer:1},
+  {q:"Medium Earth Orbit approx distance?",options:["2000 km","10,000 km","36,000 km"],answer:1},
+  {q:"Satellites move due to?",options:["Gravity","Wind","Magnetism"],answer:0}
+];
+let currentQ=0,score=0;
+function loadQuestion(){
+  const qBox=document.getElementById('question-box');
+  const q=quizQuestions[currentQ];
+  let html=`<p>${currentQ+1}. ${q.q}</p>`;
+  q.options.forEach((opt,i)=>{ html+=`<input type="radio" name="q" value="${i}"> ${opt}<br>`; });
+  qBox.innerHTML=html; updateProgress();
+}
+function nextQuestion(){
+  const selected=document.querySelector('input[name="q"]:checked');
+  if(!selected){ alert("Please select an answer!"); return; }
+  if(parseInt(selected.value)===quizQuestions[currentQ].answer) score++;
+  currentQ++;
+  if(currentQ<quizQuestions.length) loadQuestion();
+  else document.getElementById('quiz-container').innerHTML=`<h3>Quiz Complete!</h3><p>Your score: ${score}/${quizQuestions.length}</p>`;
+}
+function updateProgress(){
+  const progress=((currentQ)/quizQuestions.length)*100;
+  document.getElementById('progress-bar').style.width=progress+"%";
+}
+loadQuestion();
+</script>
+
+</body>
+</html>

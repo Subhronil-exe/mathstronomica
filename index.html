@@ -249,7 +249,7 @@ for(let i=0;i<120;i++){
 QRCode.toCanvas(document.getElementById('qrCanvas'), 'https://mathstronomica-ai.tiiny.site', {width:150});
 
 // OpenAI API
-const OPENAI_API_KEY = "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";
+const OPENAI_API_KEY = "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";
 
 async function askAI(question){
   if(!OPENAI_API_KEY || OPENAI_API_KEY.includes("ENTER-YOUR")){
@@ -305,3 +305,4 @@ document.querySelectorAll(".suggestion-pill").forEach(p=>{p.onclick=()=>userInpu
 
 </body>
 </html>
+

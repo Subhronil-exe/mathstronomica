@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Mathstronomica Ground Station</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+
+body {
+  margin: 0;
+  overflow: hidden;
+  background: radial-gradient(#000005, #000000);
+  color: #00ffe0;
+  font-family: 'Orbitron', monospace;
+}
+
+canvas {
+  display: block;
+  margin: 0 auto;
+  background: transparent;
+}
+
+#weather {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 48px;
+  text-shadow: 0 0 25px #00ffe0, 0 0 40px #00ffe0;
+  font-weight: bold;
+}
+
+#log {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 350px;
+  max-height: 760px;
+  overflow-y: auto;
+  background: rgba(0,0,0,0.6);
+  padding: 16px;
+  border-radius: 16px;
+  font-size: 16px;
+  box-shadow: 0 0 35px #00ffe0;
+}
+
+.log-entry {
+  margin-bottom: 8px;
+  color: #00ff99;
+  text-shadow: 0 0 10px #00ff99;
+}
+
+#credits {
+  position: absolute;
+  bottom: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 20px;
+  color: #00ffe0;
+  text-shadow: 0 0 10px #00ffe0;
+}
+
+#math-concept {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 380px;
+  max-height: 760px;
+  overflow-y: auto;
+  background: rgba(0,0,0,0.6);
+  padding: 20px;
+  border-radius: 16px;
+  font-size: 16px;
+  color: #00ffe0;
+  text-shadow: 0 0 10px #00ffe0;
+  box-shadow: 0 0 35px #00ffe0;
+}
+
+#math-concept h2 {
+  font-size: 22px;
+  text-align: center;
+  margin-bottom: 12px;
+  color: #00ffff;
+  text-shadow: 0 0 15px #00ffff;
+}
+
+#math-concept ul {
+  padding-left: 18px;
+}
+</style>
+</head>
+<body>
+<canvas id="radar" width="800" height="800"></canvas>
+
+<div id="weather">🌡 Temp: -- °C | 💧 Humidity: --%</div>
+<div id="log"></div>
+
+<div id="math-concept">
+  <h2>🚀 Future of Orbital Mathematics</h2>
+  <p>
+    Imagine predicting satellite swarms in real-time using <b>Fractal Orbital Dynamics</b>:  
+    every satellite's orbit can be modeled as a fractal pattern, allowing the computation of 
+    highly complex interactions with near-zero latency.  
+    Unlike conventional physics-based simulations, this uses <b>recursive geometric optimization</b> 
+    to forecast satellite positions across multiple layers of orbital interference simultaneously.  
+  </p>
+  <p><b>Future Scope:</b></p>
+  <ul>
+    <li>Instant swarm coordination for mega-constellations in space. ✅</li>
+    <li>Efficient collision avoidance for thousands of satellites. ✅</li>
+    <li>AI-driven space traffic management integrating fractal predictions. ✅</li>
+    <li>Next-gen ground station software: fully autonomous, visually intuitive, NASA-level dashboards. ✅</li>
+  </ul>
+  <p>This concept is unique and has not been fully explored online — merging fractals, AI, and orbital mechanics for ultra-efficient satellite navigation.</p>
+</div>
+
+<div id="credits">Credits: Subhronil Majumdar, Arijit & Piya Sharma</div>
+
+<script>
+const canvas = document.getElementById("radar");
+const ctx = canvas.getContext("2d");
+const cx = canvas.width / 2;
+const cy = canvas.height / 2;
+const radarRadius = 350;
+
+let sweepAngle = 0;
+let sweepDir = 1;
+
+// Satellites on same orbit forming rotating triangle
+const orbitRadius = 200;
+let baseAngle = 0;
+const satelliteCount = 3;
+const satelliteGap = (2*Math.PI) / satelliteCount;
+const satelliteSpeed = 0.01;
+
+const logDiv = document.getElementById("log");
+const weatherDiv = document.getElementById("weather");
+
+// Starfield
+const stars = [];
+for(let i=0;i<300;i++){
+  stars.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, r: Math.random()*2});
+}
+
+// Triangle color control
+let colorHue = 0;
+
+// Logs
+function addLog(msg) {
+  const now = new Date();
+  const timestamp = now.getHours().toString().padStart(2,'0') + ':' +
+                    now.getMinutes().toString().padStart(2,'0') + ':' +
+                    now.getSeconds().toString().padStart(2,'0');
+  const entry = document.createElement('div');
+  entry.className = 'log-entry';
+  entry.textContent = `[${timestamp}] ${msg}`;
+  logDiv.appendChild(entry);
+  if(logDiv.childNodes.length>25) logDiv.removeChild(logDiv.childNodes[0]);
+  logDiv.scrollTop = logDiv.scrollHeight;
+}
+
+// Draw radar background
+function drawRadarBG() {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  // Stars
+  ctx.fillStyle = "#003322";
+  for(let s of stars){
+    ctx.beginPath();
+    ctx.arc(s.x,s.y,s.r,0,2*Math.PI);
+    ctx.fill();
+  }
+
+  // Radar orbits
+  ctx.strokeStyle = "rgba(0,255,200,0.35)";
+  ctx.lineWidth = 2;
+  for(let r=50; r<=radarRadius; r+=50){
+    ctx.beginPath();
+    ctx.arc(cx,cy,r,0,2*Math.PI);
+    ctx.stroke();
+  }
+}
+
+// Draw radar sweep
+function drawSweep() {
+  const sweepRad = sweepAngle*Math.PI/180;
+  const length = radarRadius;
+  ctx.strokeStyle = "#00ffe0";
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(cx,cy);
+  ctx.lineTo(cx + length*Math.cos(sweepRad), cy + length*Math.sin(sweepRad));
+  ctx.stroke();
+}
+
+// Draw satellites, triangle, and center lines
+function drawSatellites() {
+  const positions = [];
+  
+  for(let i=0;i<satelliteCount;i++){
+    const angle = baseAngle + i*satelliteGap;
+    const x = cx + orbitRadius*Math.cos(angle);
+    const y = cy + orbitRadius*Math.sin(angle);
+    positions.push({x, y});
+  }
+
+  // Draw satellites
+  ctx.fillStyle = "red";
+  ctx.shadowColor = "red";
+  ctx.shadowBlur = 20;
+  for(const pos of positions){
+    ctx.beginPath();
+    ctx.arc(pos.x, pos.y, 8, 0, 2*Math.PI);
+    ctx.fill();
+  }
+  ctx.shadowBlur = 0;
+
+  // Dynamic triangle
+  colorHue = (colorHue + 1) % 360;
+  ctx.strokeStyle = `hsl(${colorHue}, 100%, 50%)`;
+  ctx.lineWidth = 3;
+  ctx.shadowColor = ctx.strokeStyle;
+  ctx.shadowBlur = 20;
+
+  // Triangle
+  ctx.beginPath();
+  ctx.moveTo(positions[0].x, positions[0].y);
+  ctx.lineTo(positions[1].x, positions[1].y);
+  ctx.lineTo(positions[2].x, positions[2].y);
+  ctx.closePath();
+  ctx.stroke();
+
+  // Connect vertices to center
+  ctx.lineWidth = 2;
+  for(const pos of positions){
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(pos.x, pos.y);
+    ctx.stroke();
+  }
+  ctx.shadowBlur = 0;
+
+  // Rotate satellites
+  baseAngle += satelliteSpeed;
+  if(baseAngle>2*Math.PI) baseAngle -= 2*Math.PI;
+}
+
+// Weather update every 5 sec
+let lastWeatherUpdate = 0;
+let temp=0, hum=0;
+function updateWeather(timestamp){
+  if(timestamp - lastWeatherUpdate > 5000){
+    temp = (Math.random()*15 + 20).toFixed(1);
+    hum = (Math.random()*50 + 30).toFixed(0);
+    weatherDiv.innerHTML = `🌡 Temp: ${temp} °C | 💧 Humidity: ${hum}%`;
+    addLog(`[SAT] Temp: ${temp}°C | Hum: ${hum}%`);
+    lastWeatherUpdate = timestamp;
+  }
+}
+
+// Main loop
+function loop(timestamp){
+  sweepAngle += sweepDir*2;
+  if(sweepAngle>180||sweepAngle<0) sweepDir*=-1;
+
+  drawRadarBG();
+  drawSweep();
+  drawSatellites();
+  updateWeather(timestamp);
+
+  requestAnimationFrame(loop);
+}
+
+loop();
+</script>
+</body>
+</html>
